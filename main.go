@@ -15,7 +15,7 @@ var PublicKey ed25519.PublicKey = fromHex("5edbddae50f6351a2a7bd049c2daf071ea4c6
 func InteractionEndpoint(w http.ResponseWriter, r *http.Request) {
 	if !hasValidSignature(r) {
 		w.WriteHeader(401)
-		w.Write([]byte("no"))
+		w.Write([]byte("does this satisfy you *discord*"))
 		return
 	}
 	data := readAndReplaceBody(r)
@@ -30,9 +30,26 @@ func InteractionEndpoint(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+
+	foxUrl := getFoxUrl()
+
+	w.WriteHeader(200)
+	respString := fmt.Sprintf(`{
+		"type": 4,
+		"data": {
+			"tts": false,
+			"content": "%v",
+			"embeds": [],
+			"allowed_mentions": []
+		}
+	}`, foxUrl)
+	w.Write([]byte(respString))
+}
+
+func getFoxUrl() string {
 	resp, err := http.Get("https://api.foxorsomething.net/fox/random.json")
 	if err != nil {
-		return
+		return "not found"
 	}
 	defer resp.Body.Close()
 
@@ -40,21 +57,8 @@ func InteractionEndpoint(w http.ResponseWriter, r *http.Request) {
 	foxData, _ := ioutil.ReadAll(resp.Body)
 	json.Unmarshal(foxData, &foxInfo)
 	id := foxInfo["id"]
-	fmt.Println(id)
-	w.WriteHeader(200)
-	respString := fmt.Sprintf(`{
-		"type": 4,
-		"data": {
-			"tts": false,
-			"content": "https://api.foxorsomething.net/fox/%v.png",
-			"embeds": [],
-			"allowed_mentions": []
-		}
-	}`, id)
-	fmt.Println(respString)
-	w.Write([]byte(respString))
+	return fmt.Sprintf("https://api.foxorsomething.net/fox/%v.png", id)
 }
-
 func fromHex(s string) []byte {
 	data, err := hex.DecodeString(s)
 	if err != nil {
