@@ -7,9 +7,10 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"fmt"
 )
 
-var PublicKey ed25519.PublicKey = fromHex("")
+var PublicKey ed25519.PublicKey = fromHex("5edbddae50f6351a2a7bd049c2daf071ea4c67503ff8a980125c2172562957cb")
 
 func InteractionEndpoint(w http.ResponseWriter, r *http.Request) {
 	if !hasValidSignature(r) {
@@ -29,6 +30,29 @@ func InteractionEndpoint(w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+	resp, err := http.Get("https://api.foxorsomething.net/fox/random.json")
+	if err != nil {
+		return
+	}
+	defer resp.Body.Close()
+
+	var  foxInfo map[string]string
+	foxData, _ := ioutil.ReadAll(resp.Body)
+	json.Unmarshal(foxData, &foxInfo)
+	id := foxInfo["id"]
+	fmt.Println(id)
+	w.WriteHeader(200)
+	respString := fmt.Sprintf(`{
+		"type": 4,
+		"data": {
+			"tts": false,
+			"content": "https://api.foxorsomething.net/fox/%v.png",
+			"embeds": [],
+			"allowed_mentions": []
+		}
+	}`, id)
+	fmt.Println(respString)
+	w.Write([]byte(respString))
 }
 
 func fromHex(s string) []byte {
@@ -57,5 +81,7 @@ func hasValidSignature(req *http.Request) bool {
 }
 
 func main() {
+	http.HandleFunc("/log/interaction", InteractionEndpoint)
+
 	http.ListenAndServe(":6969", nil)
 }
