@@ -5,9 +5,9 @@ import (
 	"crypto/ed25519"
 	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
-	"fmt"
 )
 
 var PublicKey ed25519.PublicKey = fromHex("5edbddae50f6351a2a7bd049c2daf071ea4c67503ff8a980125c2172562957cb")
@@ -53,7 +53,7 @@ func getFoxUrl() string {
 	}
 	defer resp.Body.Close()
 
-	var  foxInfo map[string]string
+	var foxInfo map[string]string
 	foxData, _ := ioutil.ReadAll(resp.Body)
 	json.Unmarshal(foxData, &foxInfo)
 	id := foxInfo["id"]
