@@ -1,4 +1,4 @@
-module github.com/plally/fox_pics_slash_commands
+module github.com/plally/goslash
 
 go 1.15
 
