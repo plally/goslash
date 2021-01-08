@@ -1,4 +1,0 @@
-package goslash
-
-func ExampleNewCommand() {
-}
