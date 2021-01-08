@@ -4,7 +4,7 @@ import (
 	"crypto/ed25519"
 	"encoding/hex"
 	"encoding/json"
-	"github.com/plally/fox_pics_slash_commands/goslash"
+	"github.com/plally/goslash/goslash"
 	log "github.com/sirupsen/logrus"
 	"io/ioutil"
 	"net/http"

@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
-	"github.com/plally/fox_pics_slash_commands/goslash"
+	"github.com/plally/goslash/goslash"
 	log "github.com/sirupsen/logrus"
 	"net/http"
 )

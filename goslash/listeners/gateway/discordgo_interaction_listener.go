@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/bwmarrin/discordgo"
-	"github.com/plally/fox_pics_slash_commands/goslash"
+	"github.com/plally/goslash/goslash"
 	log "github.com/sirupsen/logrus"
 )
 
