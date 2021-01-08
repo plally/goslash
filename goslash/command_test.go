@@ -1,0 +1,4 @@
+package goslash
+
+func ExampleNewCommand() {
+}
