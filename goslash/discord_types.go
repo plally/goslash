@@ -161,11 +161,8 @@ const (
 	ACK_WITH_SOURCE
 )
 
-func Response(content string, keepSource bool) *InteractionResponse {
-	responseType := ACK
-	if keepSource {
-		responseType = CHANNEL_MESSAGE_WITH_SOURCE
-	}
+func Response(content string) *InteractionResponse {
+	responseType := CHANNEL_MESSAGE
 	return &InteractionResponse{
 		Type: responseType,
 		Data: &InteractionApplicationCommandCallbackData{
@@ -174,8 +171,25 @@ func Response(content string, keepSource bool) *InteractionResponse {
 	}
 }
 
+func Acknowledge() *InteractionResponse {
+	return &InteractionResponse{
+		Type: ACK,
+		Data: nil,
+	}
+}
+
 func (resp *InteractionResponse) Embed(embed discordgo.MessageEmbed) *InteractionResponse {
 	resp.Data.Embeds = append(resp.Data.Embeds, embed)
+	return resp
+}
+
+func (resp *InteractionResponse) KeepSource() *InteractionResponse {
+	if resp.Type == CHANNEL_MESSAGE {
+		resp.Type = CHANNEL_MESSAGE_WITH_SOURCE
+		return resp
+	}
+
+	resp.Type = ACK_WITH_SOURCE
 	return resp
 }
 
