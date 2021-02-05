@@ -21,8 +21,8 @@ func (ctx *InteractionContext) Respond(response *InteractionResponse) {
 	}
 }
 
-func (ctx *InteractionContext) Send(message *discordgo.Message) {
-	// TODO finish this
+func (ctx *InteractionContext) Send(message *discordgo.WebhookParams) (*discordgo.Message, error){
+	return ctx.App.Session.WebhookExecute(ctx.App.ClientID, ctx.Token, true, message)
 }
 
 // InteractionContext.GetOption returns an ApplicationCommandInteractionDataOption from the interactions list of options

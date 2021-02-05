@@ -5,9 +5,6 @@ import (
 	"testing"
 )
 
-type Mockhandler struct {
-
-}
 func TestApplication_HandleInteraction(t *testing.T) {
 	app, _ := NewApp("123", "BOT Token")
 	pingCommand := NewCommand("ping", "pong!")

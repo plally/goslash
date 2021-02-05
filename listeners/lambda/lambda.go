@@ -46,7 +46,7 @@ func (listener *Listener) lambdaHandler(req events.APIGatewayV2HTTPRequest) (eve
 	message := append([]byte(timestamp), body...)
 
 	if !ed25519.Verify(listener.PublicKey, message, fromHex(signature)) {
-		log.Info("Invalid request signature returning 401")
+		logger.Info("Invalid request signature returning 401")
 		return statusResponse(http.StatusUnauthorized), nil
 	}
 

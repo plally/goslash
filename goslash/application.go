@@ -11,6 +11,7 @@ type Application struct {
 	Commands   map[string]*Command
 	AuthHeader string
 	ClientID   string
+	DefaultResponse *InteractionResponse
 
 	Session *discordgo.Session // TODO dont depend on discordgo
 }
@@ -40,6 +41,7 @@ func NewApp(clientId, auth string) (*Application, error) {
 		AuthHeader: auth,
 		ClientID:   clientId,
 		Session:    session,
+		DefaultResponse: Response("Sorry, a response for that command could not be found").OnlyAuthor(),
 	}, nil
 }
 
@@ -52,6 +54,15 @@ func (app *Application) GetCommand(name string) *Command {
 }
 
 func (app *Application) HandleInteraction(interaction *Interaction) *InteractionResponse {
+	resp := app.getResponse(interaction)
+	if resp == nil {
+		resp = app.DefaultResponse
+	}
+
+	return resp
+}
+
+func (app *Application) getResponse(interaction *Interaction) *InteractionResponse {
 
 	rootCommand := app.GetCommand(interaction.Data.Name)
 	if rootCommand == nil {
