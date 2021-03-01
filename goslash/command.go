@@ -18,24 +18,33 @@ func (cmd *Command) IsGlobal() bool {
 	return cmd.isGlobal
 }
 
-func (cmd *Command) SetOptions(options ...ApplicationCommandOption) {
+func (cmd *Command) SetOptions(options ...ApplicationCommandOption) *Command {
 	cmd.Options = options
+	return cmd
 }
 
-func (cmd *Command) AddCheck(name string, command CommandHandler) {
+func (cmd *Command) AddSubCheck(name string, command CommandHandler) *Command{
 	cmd.checks[name] = append(cmd.checks[name], command)
+
+	return cmd
 }
 
-func (cmd *Command) AddRootCheck(command CommandHandler) {
-	cmd.AddCheck(cmd.Name, command)
+func (cmd *Command) AddCheck(command CommandHandler) *Command {
+	cmd.AddSubCheck(cmd.Name, command)
+
+	return cmd
 }
 
-func (cmd *Command) SetRootHandler(command CommandHandler) {
-	cmd.SetHandler(cmd.Name, command)
+func (cmd *Command) SetHandler(command CommandHandler) *Command {
+	cmd.SetSubHandler(cmd.Name, command)
+
+	return cmd
 }
 
-func (cmd *Command) SetHandler(name string, command CommandHandler) {
+func (cmd *Command) SetSubHandler(name string, command CommandHandler) *Command {
 	cmd.handlers[name] = command
+
+	return cmd
 }
 
 func (cmd *Command) GetHandler(name string) CommandHandler {

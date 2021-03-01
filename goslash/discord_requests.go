@@ -34,7 +34,7 @@ func (app *Application) RegisterGlobal(command *Command) (*Command, error) {
 	return command, err
 }
 
-func (app *Application) Register(guildid string, command *Command) (*Command, error) {
+func (app *Application) RegisterGuild(guildid string, command *Command) (*Command, error) {
 	data, err := app.PostJson(fmt.Sprintf("applications/%v/guilds/%v/commands", app.ClientID, guildid), command)
 	if err != nil {
 		return nil, err
