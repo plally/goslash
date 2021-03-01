@@ -4,7 +4,7 @@ go 1.15
 
 require (
 	github.com/aws/aws-lambda-go v1.21.0
-	github.com/bwmarrin/discordgo v0.22.0
+	github.com/bwmarrin/discordgo v0.23.2
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/kr/pretty v0.1.0 // indirect
 	github.com/sirupsen/logrus v1.7.0

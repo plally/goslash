@@ -119,13 +119,15 @@ type GuildMember struct {
 	Permissions  string      `json:"permissions"`
 	PremiumSince interface{} `json:"premium_since"`
 	Roles        []string    `json:"roles"`
-	User         struct {
-		Avatar        string `json:"avatar"`
-		Discriminator string `json:"discriminator"`
-		ID            string `json:"id"`
-		PublicFlags   int    `json:"public_flags"`
-		Username      string `json:"username"`
-	} `json:"user"`
+	User         *GuildUser
+}
+
+type GuildUser struct {
+	Username      string `json:"username"`
+	PublicFlags   int    `json:"public_flags"`
+	ID            string `json:"id"`
+	Discriminator string `json:"discriminator"`
+	Avatar        string `json:"avatar"`
 }
 
 type ApplicationCommandInteractionDataOption struct {
@@ -146,9 +148,22 @@ type Interaction struct {
 	ChannelID string                            `json:"channel_id"`
 	Data      ApplicationCommandInteractionData `json:"data"`
 	GuildID   string                            `json:"guild_id"`
-	Member    GuildMember                       `json:"member"`
+	Member    *GuildMember                       `json:"member"`
+	User *GuildUser
 	Token     string                            `json:"token"`
 	Version   int                               `json:"version"`
+
+}
+
+func (interaction Interaction) GetUser() *GuildUser {
+	if interaction.User != nil {
+		return interaction.User
+	}
+
+	return interaction.Member.User
+}
+func (interaction Interaction) IsDM() bool {
+	return interaction.GuildID == ""
 }
 
 type InteractionResponseType int
@@ -193,9 +208,13 @@ func (resp *InteractionResponse) KeepSource() *InteractionResponse {
 	return resp
 }
 
-func (resp *InteractionResponse) OnlyAuthor() *InteractionResponse {
+func (resp *InteractionResponse) Ephemeral() *InteractionResponse {
 	resp.Data.Flags = 1 << 6
 	return resp
+}
+
+func (resp *InteractionResponse) OnlyAuthor() *InteractionResponse {
+	return resp.Ephemeral()
 }
 
 type InteractionResponse struct {
