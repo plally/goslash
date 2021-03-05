@@ -23,7 +23,7 @@ func (cmd *Command) SetOptions(options ...ApplicationCommandOption) *Command {
 	return cmd
 }
 
-func (cmd *Command) AddSubCheck(name string, command CommandHandler) *Command{
+func (cmd *Command) AddSubCheck(name string, command CommandHandler) *Command {
 	cmd.checks[name] = append(cmd.checks[name], command)
 
 	return cmd

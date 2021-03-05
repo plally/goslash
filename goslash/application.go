@@ -8,9 +8,9 @@ import (
 type Application struct {
 	http.Client
 
-	Commands   map[string]*Command
-	AuthHeader string
-	ClientID   string
+	Commands        map[string]*Command
+	AuthHeader      string
+	ClientID        string
 	DefaultResponse *InteractionResponse
 
 	Session *discordgo.Session // TODO dont depend on discordgo
@@ -36,11 +36,11 @@ func NewApp(clientId, auth string) (*Application, error) {
 	}
 
 	return &Application{
-		Client:     http.Client{},
-		Commands:   make(map[string]*Command),
-		AuthHeader: auth,
-		ClientID:   clientId,
-		Session:    session,
+		Client:          http.Client{},
+		Commands:        make(map[string]*Command),
+		AuthHeader:      auth,
+		ClientID:        clientId,
+		Session:         session,
 		DefaultResponse: Response("Sorry, a response for that command could not be found").OnlyAuthor(),
 	}, nil
 }

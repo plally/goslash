@@ -43,3 +43,23 @@ func (app *Application) RegisterGuild(guildid string, command *Command) (*Comman
 	err = json.Unmarshal(data, &command.ApplicationCommand)
 	return command, err
 }
+
+func (app *Application) RegisterAllGuild(guildid string) error {
+	for _, command := range app.Commands {
+		_, err := app.RegisterGuild(guildid, command)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (app *Application) RegisterAllGlobal() error {
+	for _, command := range app.Commands {
+		_, err := app.RegisterGlobal(command)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}

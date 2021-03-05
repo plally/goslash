@@ -21,7 +21,7 @@ func (ctx *InteractionContext) Respond(response *InteractionResponse) {
 	}
 }
 
-func (ctx *InteractionContext) Send(message *discordgo.WebhookParams) (*discordgo.Message, error){
+func (ctx *InteractionContext) Send(message *discordgo.WebhookParams) (*discordgo.Message, error) {
 	return ctx.App.Session.WebhookExecute(ctx.App.ClientID, ctx.Token, true, message)
 }
 

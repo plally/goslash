@@ -15,15 +15,15 @@ func TestApplication_HandleInteraction(t *testing.T) {
 		ID:        "123",
 		Type:      2,
 		ChannelID: "123",
-		Data:      ApplicationCommandInteractionData{
+		Data: ApplicationCommandInteractionData{
 			ID:      "123",
 			Name:    "ping",
 			Options: nil,
 		},
-		GuildID:   "123",
-		Member:    GuildMember{},
-		Token:     "abcdefg",
-		Version:   1,
+		GuildID: "123",
+		Member:  GuildMember{},
+		Token:   "abcdefg",
+		Version: 1,
 	})
 
 	assert.Equal(t, resp, Response("pong!").KeepSource(), "resp should be equal to 'pong!'")
@@ -31,5 +31,5 @@ func TestApplication_HandleInteraction(t *testing.T) {
 }
 
 func pingHandler(ctx *InteractionContext) *InteractionResponse {
-  return Response("pong!").KeepSource()
+	return Response("pong!").KeepSource()
 }

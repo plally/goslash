@@ -148,11 +148,10 @@ type Interaction struct {
 	ChannelID string                            `json:"channel_id"`
 	Data      ApplicationCommandInteractionData `json:"data"`
 	GuildID   string                            `json:"guild_id"`
-	Member    *GuildMember                       `json:"member"`
-	User *GuildUser
-	Token     string                            `json:"token"`
-	Version   int                               `json:"version"`
-
+	Member    *GuildMember                      `json:"member"`
+	User      *GuildUser
+	Token     string `json:"token"`
+	Version   int    `json:"version"`
 }
 
 func (interaction Interaction) GetUser() *GuildUser {
