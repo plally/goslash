@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/bwmarrin/discordgo"
 	"github.com/plally/goslash/goslash"
 	log "github.com/sirupsen/logrus"
 	"net/http"
@@ -50,7 +51,7 @@ func (listener *Listener) lambdaHandler(req events.APIGatewayV2HTTPRequest) (eve
 		return statusResponse(http.StatusUnauthorized), nil
 	}
 
-	var interaction goslash.Interaction
+	var interaction discordgo.Interaction
 	err := json.Unmarshal(body, &interaction)
 	if err != nil {
 		logger.WithField("error", err).Warn("error unmarshalling interaction")
@@ -59,7 +60,7 @@ func (listener *Listener) lambdaHandler(req events.APIGatewayV2HTTPRequest) (eve
 
 	logger = logger.WithField("interaction", interaction)
 
-	if interaction.Type == goslash.PING {
+	if interaction.Type == discordgo.InteractionPing {
 		logger.Info("received ping interaction, responding with pong")
 		return events.APIGatewayV2HTTPResponse{
 			StatusCode: 200,
@@ -75,8 +76,8 @@ func (listener *Listener) lambdaHandler(req events.APIGatewayV2HTTPRequest) (eve
 	response := listener.Handler(&interaction)
 	if response == nil {
 		logger.Info("handler did not return a response, setting response to ACK")
-		response = &goslash.InteractionResponse{
-			Type: goslash.ACK,
+		response = &discordgo.InteractionResponse{
+			Type: discordgo.InteractionResponseAcknowledge,
 		}
 	}
 
