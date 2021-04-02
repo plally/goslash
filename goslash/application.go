@@ -15,7 +15,8 @@ type Application struct {
 
 	Session *discordgo.Session // TODO dont depend on discordgo
 }
-type InteractionHandler func(interaction *Interaction) *InteractionResponse
+
+type InteractionHandler func(interaction *discordgo.Interaction) *discordgo.InteractionResponse
 
 // a Listener handles receiving and responding to an interaction while letting an InteractionHandler decide the response
 // some listeners supported included with goslash are lambda.Listener (for aws lambda), httplistener.Listener and gateway.Listener (for receiving interactions from the discord gateway)
@@ -24,7 +25,7 @@ type Listener interface {
 }
 
 func (app *Application) SetListener(listener Listener) {
-	listener.SetHandler(func(interaction *Interaction) *InteractionResponse {
+	listener.SetHandler(func(interaction *discordgo.Interaction) *discordgo.InteractionResponse {
 		return app.HandleInteraction(interaction)
 	})
 }
@@ -41,7 +42,7 @@ func NewApp(clientId, auth string) (*Application, error) {
 		AuthHeader:      auth,
 		ClientID:        clientId,
 		Session:         session,
-		DefaultResponse: Response("Sorry, a response for that command could not be found").OnlyAuthor(),
+		DefaultResponse: Response("A response for that command could not be found"),
 	}, nil
 }
 
@@ -53,23 +54,23 @@ func (app *Application) GetCommand(name string) *Command {
 	return nil
 }
 
-func (app *Application) HandleInteraction(interaction *Interaction) *InteractionResponse {
+func (app *Application) HandleInteraction(interaction *discordgo.Interaction) *discordgo.InteractionResponse {
 	resp := app.getResponse(interaction)
 	if resp == nil {
 		resp = app.DefaultResponse
 	}
 
-	return resp
+	return resp.ToDiscordgo()
 }
 
-func (app *Application) getResponse(interaction *Interaction) *InteractionResponse {
+func (app *Application) getResponse(interaction *discordgo.Interaction) *InteractionResponse {
 
 	rootCommand := app.GetCommand(interaction.Data.Name)
 	if rootCommand == nil {
 		return nil
 	}
 
-	ctx := &InteractionContext{interaction, app, []string{rootCommand.Name}}
+	ctx := &InteractionUpdate{interaction, app, []string{rootCommand.Name}}
 
 	if resp := rootCommand.Handle(ctx); resp != nil {
 		return resp
@@ -78,7 +79,7 @@ func (app *Application) getResponse(interaction *Interaction) *InteractionRespon
 	return handleOptions(rootCommand, ctx, interaction.Data.Options)
 }
 
-func handleOptions(rootCommand *Command, ctx *InteractionContext, options []ApplicationCommandInteractionDataOption) *InteractionResponse {
+func handleOptions(rootCommand *Command, ctx *InteractionUpdate, options []*discordgo.ApplicationCommandInteractionDataOption) *InteractionResponse {
 	for _, option := range options {
 		ctx.InvokedCommands = append(ctx.InvokedCommands, option.Name)
 

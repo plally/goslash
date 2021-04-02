@@ -35,7 +35,7 @@ func NewGatewayListener(botToken string) (*Listener, error) {
 			return
 		}
 
-		var interaction goslash.Interaction
+		var interaction discordgo.Interaction
 
 		err := json.Unmarshal(event.RawData, &interaction)
 		if err != nil {

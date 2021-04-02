@@ -1,14 +1,15 @@
 package goslash
 
 import (
+	"github.com/bwmarrin/discordgo"
 	"strings"
 )
 
-type CommandHandler func(interaction *InteractionContext) *InteractionResponse
+type CommandHandler func(interaction *InteractionUpdate) *InteractionResponse
 
 // Command stores an ApplicationCommand and a handler and adds some helper methods
 type Command struct {
-	ApplicationCommand
+	discordgo.ApplicationCommand
 	checks   map[string][]CommandHandler
 	handlers map[string]CommandHandler
 	isGlobal bool
@@ -18,7 +19,7 @@ func (cmd *Command) IsGlobal() bool {
 	return cmd.isGlobal
 }
 
-func (cmd *Command) SetOptions(options ...ApplicationCommandOption) *Command {
+func (cmd *Command) SetOptions(options ...*discordgo.ApplicationCommandOption) *Command {
 	cmd.Options = options
 	return cmd
 }
@@ -51,7 +52,7 @@ func (cmd *Command) GetHandler(name string) CommandHandler {
 	return cmd.handlers[name]
 }
 
-func (cmd *Command) Handle(interaction *InteractionContext) *InteractionResponse {
+func (cmd *Command) Handle(interaction *InteractionUpdate) *InteractionResponse {
 	name := strings.Join(interaction.InvokedCommands, " ")
 
 	handler := cmd.GetHandler(name)
@@ -73,7 +74,7 @@ func (cmd *Command) Handle(interaction *InteractionContext) *InteractionResponse
 
 func NewCommand(name, description string) *Command {
 	return &Command{
-		ApplicationCommand: ApplicationCommand{
+		ApplicationCommand: discordgo.ApplicationCommand{
 			Name:        name,
 			Description: description,
 			Options:     nil,
