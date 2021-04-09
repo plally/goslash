@@ -6,7 +6,19 @@ import (
 
 // ensure the global command list is up to date with what is listed by this app internally
 func (app *Application) SyncGlobal() {
-	// TODO
+	commands, err := app.Session.ApplicationCommands(app.ClientID, "")
+	if err != nil {
+		log.WithError(err).Warn("error syncing global commands")
+	}
+	for _, command := range commands {
+		localCommand := app.GetCommand(command.Name)
+		if localCommand == nil {
+			app.DeleteGlobal(command.ID)
+			continue
+		}
+	}
+	// TODO check command equality to determine which commands should be registered
+	app.RegisterAllGlobal()
 }
 
 func (app *Application) RegisterGlobal(command *Command) (*Command, error) {
@@ -50,4 +62,8 @@ func (app *Application) RegisterAllGlobal() error {
 		}
 	}
 	return nil
+}
+
+func (app *Application) DeleteGlobal(commandId string) error {
+	return app.Session.ApplicationCommandDelete(app.ClientID, "", commandId)
 }
