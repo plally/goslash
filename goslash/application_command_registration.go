@@ -1,46 +1,34 @@
 package goslash
 
 import (
-	"encoding/json"
-	"fmt"
 	log "github.com/sirupsen/logrus"
 )
 
-const DISCORD_API_BASE_URL = "https://discord.com/api/v8"
-
-func (app Application) PostJson(path string, obj interface{}) ([]byte, error) {
-	url := fmt.Sprintf("%v/%v", DISCORD_API_BASE_URL, path)
-
-	return app.Session.Request("POST", url, obj)
-}
-
-func (app *Application) AddCommand(command *Command) {
-	app.Commands[command.Name] = command
+// ensure the global command list is up to date with what is listed by this app internally
+func (app *Application) SyncGlobal() {
+	// TODO
 }
 
 func (app *Application) RegisterGlobal(command *Command) (*Command, error) {
-	data, err := app.PostJson(fmt.Sprintf("applications/%v/commands", app.ClientID), command)
+	newCommand, err := app.Session.ApplicationCommandCreate(app.ClientID, "", &command.ApplicationCommand)
 	if err != nil {
 		log.WithField("error", err).Info("Error occurred while registering global command")
-		return nil, err
+		return command, err
 	}
 
-	err = json.Unmarshal(data, &command.ApplicationCommand)
 	app.Commands[command.Name] = command
 	command.isGlobal = true
-	if err != nil {
-		log.WithField("error", err).Info("Error occurred while registering global command")
-	}
+	command.ApplicationCommand = *newCommand
+
 	return command, err
 }
 
 func (app *Application) RegisterGuild(guildid string, command *Command) (*Command, error) {
-	data, err := app.PostJson(fmt.Sprintf("applications/%v/guilds/%v/commands", app.ClientID, guildid), command)
+	_, err := app.Session.ApplicationCommandCreate(app.ClientID, guildid, &command.ApplicationCommand)
 	if err != nil {
 		return nil, err
 	}
 
-	err = json.Unmarshal(data, &command.ApplicationCommand)
 	return command, err
 }
 
