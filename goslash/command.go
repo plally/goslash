@@ -19,6 +19,9 @@ func (cmd *Command) IsGlobal() bool {
 	return cmd.isGlobal
 }
 
+func (cmd *Command) SetDefaultPermission(perm bool) {
+	cmd.DefaultPermission = perm
+}
 func (cmd *Command) SetOptions(options ...*discordgo.ApplicationCommandOption) *Command {
 	cmd.Options = options
 	return cmd
@@ -78,8 +81,10 @@ func NewCommand(name, description string) *Command {
 			Name:        name,
 			Description: description,
 			Options:     nil,
+			DefaultPermission: true,
 		},
 		handlers: make(map[string]CommandHandler),
 		checks:   make(map[string][]CommandHandler),
+
 	}
 }
