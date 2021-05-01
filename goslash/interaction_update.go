@@ -66,7 +66,12 @@ func getOption(invokedCommands []string, nameToFind string, options []*discordgo
 
 func (interaction *InteractionUpdate) GetMember(name string) *discordgo.Member {
 	id := interaction.GetString(name)
-	return interaction.Data.Resolved.Members[id]
+	member := interaction.Data.Resolved.Members[id]
+	user := interaction.Data.Resolved.Users[id]
+	if user != nil && member != nil {
+		member.User = user
+	}
+	return member
 }
 
 func (interaction *InteractionUpdate) GetUser(name string) *discordgo.User {
