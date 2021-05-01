@@ -88,6 +88,5 @@ func (interaction *InteractionUpdate) GetBool(name string) bool {
 		return false
 	}
 
-	return option.Value.(string)
-}
+	return option.Value.(bool)
 }
