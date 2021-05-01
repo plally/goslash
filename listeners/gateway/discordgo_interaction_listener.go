@@ -36,7 +36,7 @@ func NewGatewayListener(botToken string) (*Listener, error) {
 		}
 
 		var interaction discordgo.Interaction
-
+		fmt.Println(event.RawData)
 		err := json.Unmarshal(event.RawData, &interaction)
 		if err != nil {
 			log.WithField("error", err).Info("error unmarshalling gateway INTERACTION_CREATE data")
