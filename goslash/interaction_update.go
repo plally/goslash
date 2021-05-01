@@ -72,6 +72,7 @@ func (interaction *InteractionUpdate) GetString(name string) string {
 
 	return option.Value.(string)
 }
+
 func (interaction *InteractionUpdate) GetInt(name string) int {
 	option := interaction.GetOption(name)
 	if option == nil {
@@ -79,4 +80,14 @@ func (interaction *InteractionUpdate) GetInt(name string) int {
 	}
 	value := option.Value.(float64)
 	return int(value)
+}
+
+func (interaction *InteractionUpdate) GetBool(name string) bool {
+	option := interaction.GetOption(name)
+	if option == nil {
+		return false
+	}
+
+	return option.Value.(string)
+}
 }

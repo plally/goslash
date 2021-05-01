@@ -1,3 +1,5 @@
+// helper functions to make building interaction responses easier
+
 package goslash
 
 import "github.com/bwmarrin/discordgo"

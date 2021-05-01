@@ -60,3 +60,21 @@ func Str(name, description string, required bool) *discordgo.ApplicationCommandO
 		Required:    required,
 	}
 }
+
+func Bool(name, description string, required bool) *discordgo.ApplicationCommandOption {
+	return &discordgo.ApplicationCommandOption{
+		Type:        discordgo.ApplicationCommandOptionBoolean,
+		Name:        name,
+		Description: description,
+		Required:    required,
+	}
+}
+
+func Mentionable(name, description string, required bool) *discordgo.ApplicationCommandOption {
+	return &discordgo.ApplicationCommandOption{
+		Type:        discordgo.ApplicationCommandOptionMentionable,
+		Name:        name,
+		Description: description,
+		Required:    required,
+	}
+}
