@@ -16,8 +16,8 @@ func Response(content string) *InteractionResponse {
 	return &InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionApplicationCommandResponseData{
-			Content:         content,
-			Flags:           0,
+			Content: content,
+			Flags:   0,
 		},
 	}
 }

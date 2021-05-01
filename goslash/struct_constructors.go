@@ -35,8 +35,8 @@ func Group(name, description string, options []*discordgo.ApplicationCommandOpti
 	}
 }
 
-func SubCmd(name, description string, options []*discordgo.ApplicationCommandOption)  *discordgo.ApplicationCommandOption {
-	return  &discordgo.ApplicationCommandOption{
+func SubCmd(name, description string, options []*discordgo.ApplicationCommandOption) *discordgo.ApplicationCommandOption {
+	return &discordgo.ApplicationCommandOption{
 		Type:        discordgo.ApplicationCommandOptionSubCommand,
 		Name:        name,
 		Description: description,
@@ -44,7 +44,7 @@ func SubCmd(name, description string, options []*discordgo.ApplicationCommandOpt
 	}
 }
 func Int(name, description string, required bool) *discordgo.ApplicationCommandOption {
-	return  &discordgo.ApplicationCommandOption{
+	return &discordgo.ApplicationCommandOption{
 		Type:        discordgo.ApplicationCommandOptionInteger,
 		Name:        name,
 		Description: description,
