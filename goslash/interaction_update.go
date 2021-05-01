@@ -71,7 +71,14 @@ func (interaction *InteractionUpdate) GetMember(name string) *discordgo.Member {
 
 func (interaction *InteractionUpdate) GetUser(name string) *discordgo.User {
 	id := interaction.GetString(name)
-	return interaction.Data.Resolved.Users[id]
+	user := interaction.Data.Resolved.Users[id]
+	if user == nil {
+		member := interaction.Data.Resolved.Members[id]
+		if member != nil {
+			user = member.User
+		}
+	}
+	return user
 }
 
 func (interaction *InteractionUpdate) GetRole(name string) *discordgo.Role {
