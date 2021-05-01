@@ -17,7 +17,7 @@ func (interaction *InteractionUpdate) IsDM() bool {
 	return interaction.Interaction.GuildID == ""
 }
 
-func (interaction *InteractionUpdate) GetUser() *discordgo.User {
+func (interaction *InteractionUpdate) GetAuthor() *discordgo.User {
 	if interaction.Member != nil {
 		return interaction.Member.User
 	}
@@ -63,6 +63,27 @@ func getOption(invokedCommands []string, nameToFind string, options []*discordgo
 
 	return nil
 }
+
+func (interaction *InteractionUpdate) GetMember(name string) *discordgo.Member {
+	id := interaction.GetString(name)
+	return interaction.Data.Resolved.Members[id]
+}
+
+func (interaction *InteractionUpdate) GetUser(name string) *discordgo.User {
+	id := interaction.GetString(name)
+	return interaction.Data.Resolved.Users[id]
+}
+
+func (interaction *InteractionUpdate) GetRole(name string) *discordgo.Role {
+	id := interaction.GetString(name)
+	return interaction.Data.Resolved.Roles[id]
+}
+
+func (interaction *InteractionUpdate) GetChannel(name string) *discordgo.Channel {
+	id := interaction.GetString(name)
+	return interaction.Data.Resolved.Channels[id]
+}
+
 
 func (interaction *InteractionUpdate) GetString(name string) string {
 	option := interaction.GetOption(name)
