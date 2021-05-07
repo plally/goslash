@@ -12,16 +12,14 @@ type Command struct {
 	discordgo.ApplicationCommand
 	checks   map[string][]CommandHandler
 	handlers map[string]CommandHandler
-	isGlobal bool
+	GuildApplicationCommands map[string]discordgo.ApplicationCommand
 }
 
-func (cmd *Command) IsGlobal() bool {
-	return cmd.isGlobal
-}
-
-func (cmd *Command) SetDefaultPermission(perm bool) {
+func (cmd *Command) SetDefaultPermission(perm bool) *Command {
 	cmd.DefaultPermission = perm
+	return cmd
 }
+
 func (cmd *Command) SetOptions(options ...*discordgo.ApplicationCommandOption) *Command {
 	cmd.Options = options
 	return cmd
@@ -85,6 +83,6 @@ func NewCommand(name, description string) *Command {
 		},
 		handlers: make(map[string]CommandHandler),
 		checks:   make(map[string][]CommandHandler),
-
+		GuildApplicationCommands: make(map[string]discordgo.ApplicationCommand),
 	}
 }

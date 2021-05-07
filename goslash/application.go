@@ -13,7 +13,7 @@ type Application struct {
 	ClientID        string
 	DefaultResponse *InteractionResponse
 
-	Session *discordgo.Session // TODO dont depend on discordgo
+	Session *discordgo.Session
 }
 
 type InteractionHandler func(interaction *discordgo.Interaction) *discordgo.InteractionResponse

@@ -1,6 +1,7 @@
 package goslash
 
 import (
+	"github.com/bwmarrin/discordgo"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -28,40 +29,45 @@ func (app *Application) RegisterGlobal(command *Command) (*Command, error) {
 		return command, err
 	}
 
-	app.Commands[command.Name] = command
-	command.isGlobal = true
 	command.ApplicationCommand = *newCommand
 
 	return command, err
 }
 
 func (app *Application) RegisterGuild(guildid string, command *Command) (*Command, error) {
-	_, err := app.Session.ApplicationCommandCreate(app.ClientID, guildid, &command.ApplicationCommand)
+	newCommand, err := app.Session.ApplicationCommandCreate(app.ClientID, guildid, &command.ApplicationCommand)
 	if err != nil {
 		return nil, err
 	}
-
+	command.GuildApplicationCommands[guildid] = *newCommand
 	return command, err
 }
 
 func (app *Application) RegisterAllGuild(guildid string) error {
+	var commands []*discordgo.ApplicationCommand
 	for _, command := range app.Commands {
-		_, err := app.RegisterGuild(guildid, command)
-		if err != nil {
-			return err
+		commands = append(commands, &command.ApplicationCommand)
+	}
+
+	newCommands, err := app.Session.ApplicationCommandBulkOverwrite(app.ClientID, guildid, commands)
+
+	for _, command := range newCommands {
+		goslashCommand := app.Commands[command.Name]
+		if guildid != "" {
+			goslashCommand.ApplicationCommand = *command
+		} else {
+			goslashCommand.GuildApplicationCommands[guildid] = *command
 		}
 	}
-	return nil
+	return err
 }
 
 func (app *Application) RegisterAllGlobal() error {
-	for _, command := range app.Commands {
-		_, err := app.RegisterGlobal(command)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
+	return app.RegisterAllGuild("")
+}
+
+func(app *Application) DeleteGuild(guildID string, commandID string) error {
+	return app.Session.ApplicationCommandDelete(app.ClientID, guildID, commandID)
 }
 
 func (app *Application) DeleteGlobal(commandId string) error {

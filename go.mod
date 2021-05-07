@@ -12,4 +12,4 @@ require (
 	gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect
 )
 
-replace github.com/bwmarrin/discordgo => github.com/plally/discordgo v0.23.3-0.20210501135847-20dfa1bb647e
+replace github.com/bwmarrin/discordgo => github.com/plally/discordgo v0.23.3-0.20210507032531-e1c59193f534
