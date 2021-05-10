@@ -34,6 +34,24 @@ func (app *Application) RegisterGlobal(command *Command) (*Command, error) {
 	return command, err
 }
 
+func (app *Application) FetchCommands(guildId string) ([]*discordgo.ApplicationCommand, error) {
+	commands, err := app.Session.ApplicationCommands(app.ClientID, guildId)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, command := range commands {
+		goslashCommand := app.Commands[command.Name]
+		if guildId == "" {
+			goslashCommand.ApplicationCommand = *command
+		} else {
+			goslashCommand.GuildApplicationCommands[guildId] = *command
+		}
+	}
+
+	return commands, nil
+}
+
 func (app *Application) RegisterGuild(guildid string, command *Command) (*Command, error) {
 	newCommand, err := app.Session.ApplicationCommandCreate(app.ClientID, guildid, &command.ApplicationCommand)
 	if err != nil {
