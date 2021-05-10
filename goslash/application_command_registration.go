@@ -53,7 +53,7 @@ func (app *Application) RegisterAllGuild(guildid string) error {
 
 	for _, command := range newCommands {
 		goslashCommand := app.Commands[command.Name]
-		if guildid != "" {
+		if guildid == "" {
 			goslashCommand.ApplicationCommand = *command
 		} else {
 			goslashCommand.GuildApplicationCommands[guildid] = *command

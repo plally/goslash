@@ -2,10 +2,6 @@ package goslash
 
 import "github.com/bwmarrin/discordgo"
 
-func Choices(...*discordgo.ApplicationCommandOptionChoice) {
-
-}
-
 func Choice(name string, value string) *discordgo.ApplicationCommandOptionChoice {
 	return &discordgo.ApplicationCommandOptionChoice{
 		Name:  name,
