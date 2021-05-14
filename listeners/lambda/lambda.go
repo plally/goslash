@@ -75,25 +75,35 @@ func (listener *Listener) lambdaHandler(req events.APIGatewayV2HTTPRequest) (eve
 
 	response := listener.Handler(&interaction)
 	if response == nil {
-		logger.Info("handler did not return a response, setting response to ACK")
+		logger.Info("handler did not return a response, setting response")
 		response = &discordgo.InteractionResponse{
-			Type: discordgo.InteractionResponseAcknowledge,
+			Type: discordgo.InteractionResponseChannelMessageWithSource,
+			Data: &discordgo.InteractionApplicationCommandResponseData{
+				Content:         "handler could not find a response",
+			},
 		}
 	}
 
 	logger = logger.WithField("response", response)
-	data, err := json.Marshal(response)
-
+	var data []byte
+	var contentType string
+	if len(response.Files) > 0 {
+		contentType, body, err = discordgo.MakeFilesBody(response, response.Files)
+	} else {
+		contentType = "application/json"
+		data, err = json.Marshal(response)
+	}
 	if err != nil {
 		log.WithField("error", err).Errorf("Could not marshal response")
 		return statusResponse(http.StatusInternalServerError), err
 	}
 
+
 	logger.WithField("response", response).Info("Returning response from interaction")
 	return events.APIGatewayV2HTTPResponse{
 		StatusCode: 200,
 		Headers: map[string]string{
-			"Content-Type": "application/json",
+			"Content-Type": contentType,
 		},
 		MultiValueHeaders: nil,
 		Body:              string(data),
