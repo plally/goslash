@@ -88,7 +88,7 @@ func (listener *Listener) lambdaHandler(req events.APIGatewayV2HTTPRequest) (eve
 	var data []byte
 	var contentType string
 	if len(response.Files) > 0 {
-		contentType, body, err = discordgo.MakeFilesBody(response, response.Files)
+		contentType, data, err = discordgo.MakeFilesBody(response, response.Files)
 	} else {
 		contentType = "application/json"
 		data, err = json.Marshal(response)
