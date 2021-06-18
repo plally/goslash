@@ -2,7 +2,6 @@ package gateway
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/bwmarrin/discordgo"
 	"github.com/plally/goslash/goslash"
 	log "github.com/sirupsen/logrus"
@@ -36,7 +35,6 @@ func NewGatewayListener(botToken string) (*Listener, error) {
 		}
 
 		var interaction discordgo.Interaction
-		fmt.Println(event.RawData)
 		err := json.Unmarshal(event.RawData, &interaction)
 		if err != nil {
 			log.WithField("error", err).Info("error unmarshalling gateway INTERACTION_CREATE data")
@@ -45,9 +43,7 @@ func NewGatewayListener(botToken string) (*Listener, error) {
 
 		response := listener.Handler(&interaction)
 		if response != nil {
-			url := fmt.Sprintf("%v/%v", DISCORD_API_BASE_URL, fmt.Sprintf("interactions/%v/%v/callback", interaction.ID, interaction.Token))
-
-			_, err := session.Request("POST", url, response)
+			err := session.InteractionRespond(&interaction, response)
 			if err != nil {
 				log.Error(err)
 			}
